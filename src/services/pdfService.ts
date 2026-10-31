@@ -12,6 +12,7 @@ class PdfService {
   private pdfDoc: pdfjsLib.PDFDocumentProxy | null = null;
   private loadingPromise: Promise<pdfjsLib.PDFDocumentProxy> | null = null;
   private activeRenderTasks = new Map<HTMLCanvasElement, pdfjsLib.RenderTask>();
+  private canvasRenderPromises = new Map<HTMLCanvasElement, Promise<RenderResult>>();
   private pageCache = new Map<number, pdfjsLib.PDFPageProxy>();
 
   public async getDocument(): Promise<pdfjsLib.PDFDocumentProxy> {
@@ -61,17 +62,36 @@ class PdfService {
     maxHeight: number,
     nightMode: boolean = false
   ): Promise<RenderResult> {
-    // Cancel existing render on this canvas if any
     const existingTask = this.activeRenderTasks.get(canvas);
     if (existingTask) {
       try {
         existingTask.cancel();
       } catch {
-        // ignore cancellation error
+        // A render that has already finished does not need cancellation.
       }
-      this.activeRenderTasks.delete(canvas);
     }
 
+    const previousRender = this.canvasRenderPromises.get(canvas);
+    const renderPromise = (previousRender
+      ? previousRender.catch(() => undefined)
+      : Promise.resolve()
+    ).then(() => this.renderPage(pageNumber, canvas, maxWidth, maxHeight, nightMode));
+    this.canvasRenderPromises.set(canvas, renderPromise);
+
+    return renderPromise.finally(() => {
+      if (this.canvasRenderPromises.get(canvas) === renderPromise) {
+        this.canvasRenderPromises.delete(canvas);
+      }
+    });
+  }
+
+  private async renderPage(
+    pageNumber: number,
+    canvas: HTMLCanvasElement,
+    maxWidth: number,
+    maxHeight: number,
+    nightMode: boolean
+  ): Promise<RenderResult> {
     const page = await this.getPage(pageNumber);
 
     // Initial unscaled viewport to get natural aspect ratio
@@ -118,7 +138,9 @@ class PdfService {
 
     try {
       await renderTask.promise;
-      this.activeRenderTasks.delete(canvas);
+      if (this.activeRenderTasks.get(canvas) === renderTask) {
+        this.activeRenderTasks.delete(canvas);
+      }
 
       // Preload next/prev pages
       this.preloadPage(pageNumber - 1);
@@ -127,7 +149,9 @@ class PdfService {
 
       return { width: cssWidth, height: cssHeight };
     } catch (err: any) {
-      this.activeRenderTasks.delete(canvas);
+      if (this.activeRenderTasks.get(canvas) === renderTask) {
+        this.activeRenderTasks.delete(canvas);
+      }
       if (err?.name === 'RenderingCancelledException') {
         return { width: cssWidth, height: cssHeight };
       }

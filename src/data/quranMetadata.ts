@@ -271,6 +271,11 @@ export interface PageVerseSpan {
   endVerse: number;
 }
 
+const VERIFIED_PAGE_START_VERSES: Readonly<Record<number, number>> = {
+  // PDF page 100 (printed page 99) begins at 5:98 in the supplied scan.
+  100: 98
+};
+
 /**
  * Computes the estimated starting and ending Ayat for a given PDF page
  */
@@ -296,7 +301,8 @@ export function getVersesForPdfPage(pdfPage: number): PageVerseSpan {
   const startRatio = pageOffset / totalPages;
   const endRatio = (pageOffset + 1) / totalPages;
 
-  const startVerse = Math.max(1, Math.min(surah.totalVerses, Math.floor(startRatio * surah.totalVerses) + 1));
+  const startVerse = VERIFIED_PAGE_START_VERSES[pdfPage]
+    ?? Math.max(1, Math.min(surah.totalVerses, Math.floor(startRatio * surah.totalVerses) + 1));
   const endVerse = Math.max(startVerse, Math.min(surah.totalVerses, Math.ceil(endRatio * surah.totalVerses)));
 
   return {
