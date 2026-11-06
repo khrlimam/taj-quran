@@ -10,9 +10,15 @@ import {
   Trash2, 
   ExternalLink,
   ChevronRight,
-  Play
+  Play,
+  Moon,
+  Sparkles,
+  CheckCircle2,
+  Circle
 } from 'lucide-react';
 import { SURAHS, JUZ_LIST, getPdfPageForAyat, Surah, Bookmark } from '../data/quranMetadata';
+import { LUNAR_AJZA } from '../data/lunarAjzaData';
+import { HijriDateInfo } from '../hooks/useLunarRecitation';
 
 interface SurahAyatPickerProps {
   isOpen: boolean;
@@ -23,6 +29,10 @@ interface SurahAyatPickerProps {
   onRemoveBookmark: (id: string) => void;
   onUpdateBookmarkNote: (id: string, note: string) => void;
   currentPdfPage: number;
+  isJuzRecited?: (day: number) => boolean;
+  onToggleJuzRecited?: (day: number) => void;
+  effectiveDay?: number;
+  hijriDate?: HijriDateInfo;
 }
 
 export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
@@ -33,9 +43,14 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
   bookmarks,
   onRemoveBookmark,
   onUpdateBookmarkNote,
-  currentPdfPage
+  currentPdfPage,
+  isJuzRecited,
+  onToggleJuzRecited,
+  effectiveDay,
+  hijriDate
 }) => {
-  const [activeTab, setActiveTab] = useState<'surah' | 'juz' | 'page' | 'bookmarks'>('surah');
+  const [activeTab, setActiveTab] = useState<'surah' | 'lunar' | 'juz' | 'page' | 'bookmarks'>('surah');
+  const [expandedLunarNote, setExpandedLunarNote] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
   const [ayatAction, setAyatAction] = useState<'jump' | 'single-audio' | 'continuous-audio'>('jump');
@@ -110,7 +125,7 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
         <div className="flex border-b border-[#d4af37]/30 bg-[#042d22] px-2 pt-1 gap-1">
           <button
             onClick={() => setActiveTab('surah')}
-            className={`flex-1 py-2 px-3 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2 px-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'surah'
                 ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
                 : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
@@ -121,15 +136,28 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('lunar')}
+            className={`flex-1 py-2 px-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+              activeTab === 'lunar'
+                ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
+                : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Moon size={15} />
+            <span>Lunar Ajza</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('juz')}
-            className={`flex-1 py-2 px-3 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2 px-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'juz'
                 ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
                 : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
             }`}
           >
             <Layers size={15} />
-            <span>Juz / Paras (30)</span>
+            <span className="hidden sm:inline">Traditional</span>
+            <span>Paras</span>
           </button>
 
           <button
@@ -331,6 +359,144 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
                               {verse}
                             </button>
                           ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Lunar Ajza (from ajza.pdf) */}
+        {activeTab === 'lunar' && (
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 max-h-[60vh] space-y-3 custom-scrollbar">
+            <div className="p-3 rounded-xl bg-[#032018] border border-[#d4af37]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-xs text-[#d4af37] flex items-center gap-1.5">
+                    <Moon size={14} /> 30 Lunar Ajza (Monthly Recitation)
+                  </span>
+                  {hijriDate && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-emerald-200">
+                      {hijriDate.formatted}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-emerald-300/70 mt-0.5">
+                  Recite one complete Juz per lunar date. Each Juz consists of complete unbroken Surahs.
+                </p>
+              </div>
+
+              {effectiveDay && (
+                <button
+                  onClick={() => {
+                    const today = LUNAR_AJZA[effectiveDay - 1];
+                    if (today) {
+                      onJumpToPage(today.startPdfPage);
+                      onClose();
+                    }
+                  }}
+                  className="px-3 py-1 rounded-lg bg-gradient-to-r from-[#d4af37] to-[#f59e0b] text-gray-950 font-bold text-xs shadow hover:brightness-110 transition-all self-start sm:self-auto"
+                >
+                  Go to Today's Juz (Day {effectiveDay})
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              {LUNAR_AJZA.map((juz) => {
+                const isToday = juz.day === effectiveDay;
+                const recited = isJuzRecited ? isJuzRecited(juz.day) : false;
+                const isExpandedNote = expandedLunarNote === juz.day;
+                const hasNote = Boolean(juz.scholarlyNote);
+
+                return (
+                  <div
+                    key={juz.day}
+                    className={`rounded-xl border transition-all ${
+                      isToday
+                        ? 'bg-gradient-to-r from-[#074735] to-[#043326] border-[#d4af37] shadow-lg ring-1 ring-[#d4af37]/40'
+                        : recited
+                        ? 'bg-[#032a20]/80 border-emerald-500/40'
+                        : 'bg-[#042d22] border-emerald-800/60 hover:border-[#d4af37]/40'
+                    }`}
+                  >
+                    <div className="p-2.5 sm:p-3 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5 flex-1">
+                        {onToggleJuzRecited && (
+                          <button
+                            onClick={() => onToggleJuzRecited(juz.day)}
+                            className="p-1 text-gray-400 hover:text-[#d4af37] transition-colors"
+                            title={recited ? 'Mark as Pending' : 'Mark as Recited'}
+                          >
+                            {recited ? (
+                              <CheckCircle2 size={18} className="text-emerald-400" />
+                            ) : (
+                              <Circle size={18} />
+                            )}
+                          </button>
+                        )}
+
+                        <div className="flex-1">
+                          <div className="flex items-center flex-wrap gap-1.5">
+                            <span className="text-xs font-bold text-[#d4af37]">
+                              Day {juz.day}
+                            </span>
+                            {isToday && (
+                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#d4af37] text-gray-950 uppercase">
+                                Today
+                              </span>
+                            )}
+                            {recited && (
+                              <span className="text-[9px] px-1 rounded bg-emerald-500/20 text-emerald-300">
+                                Recited
+                              </span>
+                            )}
+                            <span className="text-xs text-white font-medium">
+                              • {juz.title}
+                            </span>
+                          </div>
+
+                          <div className="text-[11px] text-emerald-200 mt-0.5">
+                            {juz.surahNames.join(', ')} ({juz.totalVerses} verses • Pages {juz.startPrintedPage}–{juz.endPrintedPage})
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        {hasNote && (
+                          <button
+                            onClick={() => setExpandedLunarNote(isExpandedNote ? null : juz.day)}
+                            className="p-1 text-[#d4af37] hover:text-white transition-colors"
+                            title="View Scholar Reflection"
+                          >
+                            <Sparkles size={14} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            onJumpToPage(juz.startPdfPage);
+                            onClose();
+                          }}
+                          className="px-2.5 py-1 text-xs rounded-md bg-[#d4af37] text-gray-900 font-bold hover:bg-[#fde047] transition-colors"
+                        >
+                          Read
+                        </button>
+                      </div>
+                    </div>
+
+                    {hasNote && isExpandedNote && juz.scholarlyNote && (
+                      <div className="px-3 pb-2.5 pt-1 border-t border-[#d4af37]/20 bg-black/30 rounded-b-xl text-xs space-y-1.5 animate-fadeIn">
+                        <div className="font-semibold text-[#d4af37] text-[11px] flex items-center gap-1">
+                          <Sparkles size={12} /> {juz.scholarlyNote.title}
+                        </div>
+                        <p className="text-emerald-100/90 text-[11px] italic leading-relaxed">
+                          "{juz.scholarlyNote.excerpt}"
+                        </p>
+                        <div className="text-[10px] text-right text-[#d4af37]/80">
+                          — {juz.scholarlyNote.quranReference}
                         </div>
                       </div>
                     )}

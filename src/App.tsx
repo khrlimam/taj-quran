@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { QuranReader } from './components/QuranReader';
 import { SurahAyatPicker } from './components/SurahAyatPicker';
 import { AudioPlayerBar, AudioPlayRequest } from './components/AudioPlayerBar';
+import { LunarReminderBanner } from './components/LunarReminderBanner';
+import { LunarMonthTrackerModal } from './components/LunarMonthTrackerModal';
 import { useBookmarks } from './hooks/useBookmarks';
+import { useLunarRecitation } from './hooks/useLunarRecitation';
 import { getMetadataForPdfPage } from './data/quranMetadata';
-import { Compass, Bookmark as BookmarkIcon, BookOpen, RotateCcw, X } from 'lucide-react';
+import { Compass, Bookmark as BookmarkIcon, BookOpen, RotateCcw, X, Moon } from 'lucide-react';
 
 export const App: React.FC = () => {
   const {
@@ -16,6 +19,9 @@ export const App: React.FC = () => {
     removeBookmark,
     updateBookmarkNote
   } = useBookmarks();
+
+  const lunar = useLunarRecitation();
+  const [isLunarTrackerOpen, setIsLunarTrackerOpen] = useState<boolean>(false);
 
   // Initial page: default to Surah Al-Fatihah (page 3, printed page 2)
   const [currentPage, setCurrentPage] = useState<number>(() => {
@@ -62,12 +68,35 @@ export const App: React.FC = () => {
 
         {/* Quick Actions */}
         <div className="flex items-center gap-2">
+          {/* Lunar Month Recitation Tracker Button */}
+          <button
+            onClick={() => setIsLunarTrackerOpen(true)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all ${
+              lunar.isTodayRecited
+                ? 'bg-[#043326] border-emerald-400 text-emerald-300 hover:bg-[#064232]'
+                : 'bg-[#03241b] border-[#d4af37]/60 text-[#d4af37] hover:bg-[#06382b]'
+            }`}
+            title={`Lunar Recitation: Day ${lunar.effectiveDay} (${lunar.todayJuz.title}) - ${
+              lunar.isTodayRecited ? 'Recited' : 'Pending'
+            }`}
+          >
+            <Moon size={15} className="text-[#d4af37]" />
+            <span className="hidden sm:inline">Day {lunar.effectiveDay}</span>
+            <span className="sm:hidden">{lunar.effectiveDay}d</span>
+            {lunar.isTodayRecited ? (
+              <span className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-emerald-400/40" />
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            )}
+          </button>
+
           <button
             onClick={() => setIsNavigatorOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#f59e0b] text-gray-950 font-bold text-xs sm:text-sm shadow-md hover:brightness-110 active:scale-95 transition-all"
           >
             <Compass size={16} />
-            <span>Surah & Ayat</span>
+            <span className="hidden sm:inline">Surah & Ayat</span>
+            <span className="sm:hidden">Index</span>
           </button>
 
           <button
@@ -84,6 +113,20 @@ export const App: React.FC = () => {
           </button>
         </div>
       </nav>
+
+      {/* Gentle Lunar Month Daily Recitation Reminder Banner */}
+      {!lunar.isReminderDismissed && (
+        <LunarReminderBanner
+          hijriDate={lunar.hijriDate}
+          todayJuz={lunar.todayJuz}
+          isTodayRecited={lunar.isTodayRecited}
+          completedCount={lunar.completedCount}
+          onJumpToPage={handlePageChange}
+          onToggleTodayRecited={lunar.markTodayRecited}
+          onOpenMonthTracker={() => setIsLunarTrackerOpen(true)}
+          onDismiss={lunar.dismissReminder}
+        />
+      )}
 
       {/* Resume Reading Alert Banner */}
       {showResumeBanner && lastReadPage && (
@@ -168,6 +211,26 @@ export const App: React.FC = () => {
         onRemoveBookmark={removeBookmark}
         onUpdateBookmarkNote={updateBookmarkNote}
         currentPdfPage={currentPage}
+        isJuzRecited={lunar.isJuzRecited}
+        onToggleJuzRecited={lunar.toggleJuzRecited}
+        effectiveDay={lunar.effectiveDay}
+        hijriDate={lunar.hijriDate}
+      />
+
+      {/* Lunar Month Recitation Tracker Modal (ajza.pdf) */}
+      <LunarMonthTrackerModal
+        isOpen={isLunarTrackerOpen}
+        onClose={() => setIsLunarTrackerOpen(false)}
+        hijriDate={lunar.hijriDate}
+        effectiveDay={lunar.effectiveDay}
+        dayOffset={lunar.dayOffset}
+        onSetDayOffset={lunar.setDayOffset}
+        isJuzRecited={lunar.isJuzRecited}
+        onToggleJuzRecited={lunar.toggleJuzRecited}
+        completedCount={lunar.completedCount}
+        progressPercentage={lunar.progressPercentage}
+        onResetMonth={lunar.resetRunningMonth}
+        onJumpToPage={handlePageChange}
       />
     </div>
   );
