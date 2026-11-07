@@ -42,3 +42,61 @@
 .animate-fadeIn {
   animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* 3D Page Turn Transition Effects for Quran Reader */
+@keyframes pageTurnNext {
+  0% {
+    opacity: 0.65;
+    transform: perspective(1200px) rotateY(-6deg) translateX(14px) scale(0.988);
+    filter: brightness(0.96);
+  }
+  60% {
+    filter: brightness(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1200px) rotateY(0deg) translateX(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes pageTurnPrev {
+  0% {
+    opacity: 0.65;
+    transform: perspective(1200px) rotateY(6deg) translateX(-14px) scale(0.988);
+    filter: brightness(0.96);
+  }
+  60% {
+    filter: brightness(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1200px) rotateY(0deg) translateX(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+.animate-page-turn-next {
+  animation: pageTurnNext 0.28s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-page-turn-prev {
+  animation: pageTurnPrev 0.28s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge, and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Better mobile tap experience */
+* {
+  -webkit-tap-highlight-color: transparent;
+}

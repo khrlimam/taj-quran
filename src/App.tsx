@@ -43,26 +43,20 @@ export const App: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-[#02140e] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#053224] via-[#021812] to-[#010b08] text-white flex flex-col justify-between p-2 sm:p-4">
+    <div className={`min-h-screen bg-[#02140e] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#053224] via-[#021812] to-[#010b08] text-white flex flex-col justify-between p-1.5 sm:p-4 ${activeAudioRequest ? 'pb-20 sm:pb-6' : 'pb-2 sm:pb-4'}`}>
       {/* Top Header Bar */}
-      <nav className="w-full max-w-5xl mx-auto flex items-center justify-between py-2 px-4 mb-2 bg-[#03241b]/80 border border-[#d4af37]/40 rounded-2xl backdrop-blur-md shadow-lg">
+      <nav className="w-full max-w-5xl mx-auto flex items-center justify-between py-1.5 sm:py-2 px-3 sm:px-4 mb-2 bg-[#03241b]/80 border border-[#d4af37]/40 rounded-2xl backdrop-blur-md shadow-lg">
         {/* Logo / Title */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#b45309] p-0.5 shadow-md flex items-center justify-center">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#b45309] p-0.5 shadow-md flex items-center justify-center shrink-0">
             <div className="w-full h-full bg-[#03241b] rounded-[10px] flex items-center justify-center text-[#d4af37]">
-              <BookOpen size={18} />
+              <BookOpen size={16} className="sm:w-[18px] sm:h-[18px]" />
             </div>
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-bold text-[#d4af37] tracking-wider flex items-center gap-2">
+            <h1 className="text-sm sm:text-lg font-bold text-[#d4af37] tracking-wider flex items-center gap-1.5 sm:gap-2">
               <span>الْقُرْآنُ الْحَكِيمُ</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-[#d4af37]/20 border border-[#d4af37]/50 text-emerald-200 font-sans font-normal">
-                18 Lines
-              </span>
             </h1>
-            <p className="text-[11px] text-emerald-300/70 font-sans">
-              Taj Company Limited • Two-Page RTL Spread Mushaf
-            </p>
           </div>
         </div>
 
@@ -114,19 +108,16 @@ export const App: React.FC = () => {
         </div>
       </nav>
 
-      {/* Gentle Lunar Month Daily Recitation Reminder Banner */}
-      {!lunar.isReminderDismissed && (
-        <LunarReminderBanner
-          hijriDate={lunar.hijriDate}
-          todayJuz={lunar.todayJuz}
-          isTodayRecited={lunar.isTodayRecited}
-          completedCount={lunar.completedCount}
-          onJumpToPage={handlePageChange}
-          onToggleTodayRecited={lunar.markTodayRecited}
-          onOpenMonthTracker={() => setIsLunarTrackerOpen(true)}
-          onDismiss={lunar.dismissReminder}
-        />
-      )}
+      {/* Gentle Lunar Month Daily Recitation Reminder Banner (Collapsible) */}
+      <LunarReminderBanner
+        hijriDate={lunar.hijriDate}
+        todayJuz={lunar.todayJuz}
+        isTodayRecited={lunar.isTodayRecited}
+        completedCount={lunar.completedCount}
+        onJumpToPage={handlePageChange}
+        onToggleTodayRecited={lunar.markTodayRecited}
+        onOpenMonthTracker={() => setIsLunarTrackerOpen(true)}
+      />
 
       {/* Resume Reading Alert Banner */}
       {showResumeBanner && lastReadPage && (
@@ -170,6 +161,7 @@ export const App: React.FC = () => {
           isBookmarked={isPageBookmarked}
           onToggleBookmark={toggleBookmark}
           onOpenNavigator={() => setIsNavigatorOpen(true)}
+          onOpenLunarTracker={() => setIsLunarTrackerOpen(true)}
           bookmarks={bookmarks}
           onPlayAudioRequest={setActiveAudioRequest}
           activeAudioRequest={activeAudioRequest}

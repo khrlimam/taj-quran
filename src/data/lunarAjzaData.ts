@@ -544,3 +544,26 @@ export function getSurahsForLunarJuz(juz: LunarJuz): Surah[] {
     .map((id) => SURAHS.find((s) => s.id === id))
     .filter((s): s is Surah => Boolean(s));
 }
+
+/**
+ * Returns the Lunar Juz that corresponds to a given PDF page
+ */
+export function getLunarJuzForPdfPage(pdfPage: number): LunarJuz {
+  if (pdfPage < 3) return LUNAR_AJZA[0];
+  if (pdfPage > 486) return LUNAR_AJZA[29];
+
+  const match = LUNAR_AJZA.find(
+    (j) => pdfPage >= j.startPdfPage && pdfPage <= j.endPdfPage
+  );
+  if (match) return match;
+
+  let candidate = LUNAR_AJZA[0];
+  for (const j of LUNAR_AJZA) {
+    if (j.startPdfPage <= pdfPage) {
+      candidate = j;
+    } else {
+      break;
+    }
+  }
+  return candidate;
+}

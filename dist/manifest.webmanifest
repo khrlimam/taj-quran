@@ -1,0 +1,25 @@
+{
+  "name": "Al-Quran - Monthly Recitation",
+  "short_name": "Al-Quran",
+  "description": "Al-Quran equipped with Monthly Recitation method by Syaikh Imran Hosein",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#021812",
+  "theme_color": "#03241b",
+  "categories": ["books", "lifestyle", "education"],
+  "icons": [
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

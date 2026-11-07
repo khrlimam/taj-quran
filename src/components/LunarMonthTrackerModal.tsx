@@ -186,13 +186,13 @@ export const LunarMonthTrackerModal: React.FC<LunarMonthTrackerModalProps> = ({
           )}
 
           {/* Filter Tabs */}
-          <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/5">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/5 gap-2 flex-wrap">
+            <div className="flex items-center gap-1 w-full sm:w-auto overflow-x-auto no-scrollbar flex-nowrap">
               <button
                 onClick={() => setFilter('all')}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`flex-1 sm:flex-initial shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   filter === 'all'
-                    ? 'bg-[#d4af37] text-gray-950 font-bold'
+                    ? 'bg-[#d4af37] text-gray-950 font-bold shadow-sm'
                     : 'text-emerald-200 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -200,9 +200,9 @@ export const LunarMonthTrackerModal: React.FC<LunarMonthTrackerModalProps> = ({
               </button>
               <button
                 onClick={() => setFilter('pending')}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`flex-1 sm:flex-initial shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   filter === 'pending'
-                    ? 'bg-[#d4af37] text-gray-950 font-bold'
+                    ? 'bg-[#d4af37] text-gray-950 font-bold shadow-sm'
                     : 'text-emerald-200 hover:text-white hover:bg-white/5'
                 }`}
               >
@@ -210,9 +210,9 @@ export const LunarMonthTrackerModal: React.FC<LunarMonthTrackerModalProps> = ({
               </button>
               <button
                 onClick={() => setFilter('completed')}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`flex-1 sm:flex-initial shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   filter === 'completed'
-                    ? 'bg-[#d4af37] text-gray-950 font-bold'
+                    ? 'bg-[#d4af37] text-gray-950 font-bold shadow-sm'
                     : 'text-emerald-200 hover:text-white hover:bg-white/5'
                 }`}
               >

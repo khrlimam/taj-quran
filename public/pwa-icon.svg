@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#053e2d"/>
+      <stop offset="60%" stop-color="#021f16"/>
+      <stop offset="100%" stop-color="#010d09"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="30%" stop-color="#f59e0b"/>
+      <stop offset="70%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="goldLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded canvas -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="496" height="496" x="8" y="8" rx="104" fill="none" stroke="url(#gold)" stroke-width="4" stroke-opacity="0.6"/>
+
+  <!-- Crescent Moon Symbol (Islamic Lunar Rhythm) -->
+  <path d="M 310,100 A 130,130 0 1,0 420,290 A 105,105 0 1,1 310,100 Z" fill="url(#gold)" filter="drop-shadow(0 8px 16px rgba(0,0,0,0.5))"/>
+
+  <!-- Quran Stand / Open Mushaf Book -->
+  <g transform="translate(256, 310)" filter="drop-shadow(0 12px 24px rgba(0,0,0,0.6))">
+    <!-- Left Page -->
+    <path d="M -8, -60 C -60, -75 -130, -55 -170, -45 C -175, 45 -170, 75 -165, 85 C -125, 75 -60, 55 -8, 70 Z" fill="#fdfbf7" stroke="url(#gold)" stroke-width="4"/>
+    <!-- Left Page Decorative Lines -->
+    <line x1="-150" y1="-25" x2="-25" y2="-40" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="-150" y1="-5" x2="-25" y2="-20" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="-150" y1="15" x2="-25" y2="0" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="-150" y1="35" x2="-25" y2="20" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="-140" y1="55" x2="-35" y2="40" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+
+    <!-- Right Page -->
+    <path d="M 8, -60 C 60, -75 130, -55 170, -45 C 175, 45 170, 75 165, 85 C 125, 75 60, 55 8, 70 Z" fill="#fdfbf7" stroke="url(#gold)" stroke-width="4"/>
+    <!-- Right Page Decorative Lines -->
+    <line x1="25" y1="-40" x2="150" y2="-25" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="25" y1="-20" x2="150" y2="-5" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="25" y1="0" x2="150" y2="15" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="25" y1="20" x2="150" y2="35" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+    <line x1="35" y1="40" x2="140" y2="55" stroke="#043828" stroke-width="4" stroke-linecap="round" stroke-opacity="0.7"/>
+
+    <!-- Spine / Center Rib -->
+    <path d="M -8, -60 L 8, -60 L 8, 70 L -8, 70 Z" fill="url(#gold)"/>
+
+    <!-- Wooden Rihal (Qur'an Stand) -->
+    <path d="M -130, 80 L 130, 150 L 115, 165 L -145, 95 Z" fill="url(#gold)" opacity="0.9"/>
+    <path d="M 130, 80 L -130, 150 L -115, 165 L 145, 95 Z" fill="url(#gold)" opacity="0.8"/>
+  </g>
+
+  <!-- Small 8-point Islamic star -->
+  <g transform="translate(140, 160)" fill="url(#goldLight)">
+    <polygon points="0,-18 5,-5 18,0 5,5 0,18 -5,5 -18,0 -5,-5"/>
+    <polygon points="0,-18 5,-5 18,0 5,5 0,18 -5,5 -18,0 -5,-5" transform="rotate(45)"/>
+  </g>
+</svg>

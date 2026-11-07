@@ -121,11 +121,11 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
           </button>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-[#d4af37]/30 bg-[#042d22] px-2 pt-1 gap-1">
+        {/* Navigation Tabs - Horizontally scrollable on mobile */}
+        <div className="flex border-b border-[#d4af37]/30 bg-[#042d22] px-2 pt-1 gap-1 overflow-x-auto no-scrollbar flex-nowrap">
           <button
             onClick={() => setActiveTab('surah')}
-            className={`flex-1 py-2 px-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap py-2 px-3 text-xs sm:text-sm font-semibold rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'surah'
                 ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
                 : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
@@ -137,7 +137,7 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
 
           <button
             onClick={() => setActiveTab('lunar')}
-            className={`flex-1 py-2 px-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap py-2 px-3 text-xs sm:text-sm font-semibold rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'lunar'
                 ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
                 : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
@@ -149,20 +149,19 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
 
           <button
             onClick={() => setActiveTab('juz')}
-            className={`flex-1 py-2 px-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap py-2 px-3 text-xs sm:text-sm font-semibold rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'juz'
                 ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
                 : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
             }`}
           >
             <Layers size={15} />
-            <span className="hidden sm:inline">Traditional</span>
-            <span>Paras</span>
+            <span>Paras (30)</span>
           </button>
 
           <button
             onClick={() => setActiveTab('page')}
-            className={`flex-1 py-2 px-3 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap py-2 px-3 text-xs sm:text-sm font-semibold rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'page'
                 ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
                 : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
@@ -174,7 +173,7 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
 
           <button
             onClick={() => setActiveTab('bookmarks')}
-            className={`flex-1 py-2 px-3 text-xs sm:text-sm font-medium rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap py-2 px-3 text-xs sm:text-sm font-semibold rounded-t-lg transition-all flex items-center justify-center gap-1.5 ${
               activeTab === 'bookmarks'
                 ? 'bg-[#06382b] text-[#d4af37] border-t-2 border-[#d4af37]'
                 : 'text-emerald-200/80 hover:text-white hover:bg-white/5'
@@ -326,7 +325,7 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
                         </div>
 
                         {/* Ayat Grid */}
-                        <div className="grid grid-cols-7 sm:grid-cols-10 gap-1.5 max-h-40 overflow-y-auto p-1 bg-[#01140e] rounded-lg">
+                        <div className="grid grid-cols-6 sm:grid-cols-10 gap-1.5 sm:gap-2 max-h-48 overflow-y-auto p-1.5 bg-[#01140e] rounded-lg custom-scrollbar">
                           {Array.from({ length: surah.totalVerses }, (_, i) => i + 1).map((verse) => (
                             <button
                               key={verse}
@@ -341,12 +340,12 @@ export const SurahAyatPicker: React.FC<SurahAyatPickerProps> = ({
                                   onClose();
                                 }
                               }}
-                              className={`py-1 text-center text-xs font-mono font-medium rounded transition-colors ${
+                              className={`h-8 sm:h-9 flex items-center justify-center text-center text-xs font-mono font-bold rounded-lg transition-all active:scale-90 ${
                                 ayatAction === 'single-audio'
-                                  ? 'bg-amber-950/60 text-amber-200 hover:bg-[#d4af37] hover:text-gray-900'
+                                  ? 'bg-amber-950/60 text-amber-200 hover:bg-[#d4af37] hover:text-gray-900 border border-amber-800/40'
                                   : ayatAction === 'continuous-audio'
-                                  ? 'bg-blue-950/60 text-blue-200 hover:bg-[#d4af37] hover:text-gray-900'
-                                  : 'bg-emerald-900/60 text-emerald-200 hover:bg-[#d4af37] hover:text-gray-900'
+                                  ? 'bg-blue-950/60 text-blue-200 hover:bg-[#d4af37] hover:text-gray-900 border border-blue-800/40'
+                                  : 'bg-emerald-900/60 text-emerald-200 hover:bg-[#d4af37] hover:text-gray-900 border border-emerald-800/40'
                               }`}
                               title={
                                 ayatAction === 'single-audio' 
